@@ -1,24 +1,51 @@
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import axios from 'axios';
 
 const schema = yup.object().shape({
   name: yup.string().required(),
   email: yup.string().email().required(),
-  message: yup.string().min(10).max(500).required()
+  message: yup.string().min(10).required()
 });
 
-const Form = () => {
+const Form = ({ setShowModal, setModal }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm({
-    resolver: yupResolver(schema)
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: '',
+      email: '',
+      message: ''
+    }
   });
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const onSubmit = async (data) => {
+    const config = {
+      method: 'post',
+      url: 'http://localhost:3000/api/contact',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data
+    };
+
+    try {
+      const response = await axios(config);
+      if (response.status === 200) {
+        setModal('Success');
+        setShowModal(true);
+        reset();
+      }
+    } catch (err) {
+      setModal('Error');
+      setShowModal(true);
+      console.error('error:', err);
+    }
   };
 
   return (

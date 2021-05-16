@@ -1,6 +1,6 @@
-const Container = ({ children, ...props }) => {
+const Container = ({ children }) => {
   return (
-    <div className="nes-container is-rounded" id="max-width">
+    <div className="nes-container is-rounded" id="form-container">
       {children}
     </div>
   );
